@@ -1,30 +1,63 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const socket = io();
-    const messages = document.getElementById('messages');
-    const messageInput = document.getElementById('message-input');
-    const username = localStorage.getItem('username');
+const socket = io();
 
-    function addMessage(message, isUser) {
-        const messageElement = document.createElement('li');
-        messageElement.classList.add('message');
-        messageElement.classList.add(isUser ? 'user' : 'other');
-        messageElement.textContent = message;
-        messages.appendChild(messageElement);
-        messages.scrollTop = messages.scrollHeight;
-    }
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const chat = document.getElementById("chat");
 
-    document.getElementById('message-input').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter' && messageInput.value.trim() !== '') {
-            const message = messageInput.value;
-            socket.emit('chat message', { message, username });
-            addMessage(`${username}: ${message}`, true);
-            messageInput.value = '';
-        }
-    });
+// Obter nome de usuário da URL
+const urlParams = new URLSearchParams(window.location.search);
+const username = urlParams.get('username');
 
-    socket.on('chat message', function (data) {
-        if (data.username !== username) {
-            addMessage(`${data.username}: ${data.message}`, false);
-        }
-    });
+if (username) {
+    socket.emit("setUsername", username);
+} else {
+    window.location.href = 'index.html'; // Redireciona para a tela de login se o nome de usuário não estiver definido
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (input.value) {
+    const message = `${username}:${input.value}`;
+    socket.emit("chatMessage", message);
+    input.value = "";
+  }
 });
+
+socket.on("userJoined", (username) => {
+  const item = document.createElement("li");
+  item.textContent = `${username} Entrou no chat`;
+  chat.appendChild(item);
+  scrollToBottom();
+});
+
+socket.on("chatMessage", async (msg) => {
+  if (typeof msg === 'string') {
+    const [msgUsername, msgText] = msg.split(':');
+    const item = document.createElement("li");
+    const isSentMessage = msgUsername === username;
+
+    item.classList.add(isSentMessage ? "sent" : "received");
+    item.innerHTML = `<strong>${msgUsername}:</strong> ${msgText}`;
+    chat.appendChild(item);
+    scrollToBottom();
+
+    // Verifica se a mensagem contém palavras correspondentes aos sons e faz solicitações para as APIs de imagem
+    if (msgText.toLowerCase().includes("img cat")) {
+      try {
+        const response = await fetch('/api/cat');
+        const data = await response.json();
+        const imageUrl = data.imageUrl;
+        const imgItem = document.createElement("li");
+        imgItem.innerHTML = `<img src="${imageUrl}" alt="cat image">`;
+        chat.appendChild(imgItem);
+        scrollToBottom();
+      } catch (error) {
+        console.error('Error fetching cat image:', error);
+      }
+    }
+  }
+});
+
+function scrollToBottom() {
+  chat.scrollTop = chat.scrollHeight;
+}

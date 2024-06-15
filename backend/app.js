@@ -1,27 +1,49 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const http = require('http');
+const socketIo = require('socket.io');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger/swagger.json');
 const userRoutes = require('./routes/userRoutes');
 const externalApiService = require('./services/externalApiService');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const server = http.createServer(app);
+const io = socketIo(server);
 
 app.use(bodyParser.json());
-app.use('/api/users', userRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api/users', userRoutes);
 
-mongoose.connect('mongodb://localhost:27017/chat-carol', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(() => {
-    console.log('Connected to MongoDB');
-}).catch(err => {
-    console.error('Failed to connect to MongoDB', err);
+io.on('connection', (socket) => {
+    socket.on('setUsername', (username) => {
+        socket.username = username;
+        io.emit('userJoined', username);
+    });
+
+    socket.on('chatMessage', (msg) => {
+        io.emit('chatMessage', msg);
+    });
 });
 
-app.listen(PORT, () => {
+app.get('/api/cat', async (req, res) => {
+    try {
+        const imageUrl = await externalApiService.getCatImage();
+        res.json({ imageUrl });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch cat image' });
+    }
+});
+
+mongoose.connect('mongodb://localhost/chat-carol', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}, () => {
+    console.log('Connected to MongoDB');
+});
+
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

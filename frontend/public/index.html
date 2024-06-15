@@ -1,14 +1,26 @@
-<div id="chat-container" class="container">
-    <h3>Chat Carol</h3>
-    <div id="chat-box" class="card-panel grey lighten-5 z-depth-1">
-        <ul id="messages" class="collection"></ul>
-    </div>
-    <div class="input-field">
-        <input id="message-input" type="text" class="validate" autocomplete="off" placeholder="Digite sua mensagem...">
-    </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-<script src="src/main.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="login-container">
+    <form id="login-form" class="login-form">
+      <h2>Login</h2>
+      <label for="username">Nome de usuário:</label>
+      <input type="text" id="username" required>
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      window.location.href = `chat.html?username=${username}`;
+    });
+  </script>
 </body>
 </html>
-

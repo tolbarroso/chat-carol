@@ -1,19 +1,31 @@
 {
     "swagger": "2.0",
     "info": {
+        "description": "API for managing users in Chat Carol application",
         "version": "1.0.0",
-        "title": "Chat Carol API",
-        "description": "API documentation for Chat Carol"
+        "title": "Chat Carol API"
     },
-    "basePath": "/api",
+    "host": "localhost:5000",
+    "basePath": "/api/users",
+    "tags": [
+        {
+            "name": "user",
+            "description": "User management"
+        }
+    ],
     "paths": {
-        "/users": {
+        "/": {
             "post": {
+                "tags": ["user"],
                 "summary": "Create a new user",
+                "operationId": "createUser",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
                 "parameters": [
                     {
-                        "name": "user",
                         "in": "body",
+                        "name": "body",
+                        "description": "User object",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/User"
@@ -23,27 +35,33 @@
                 "responses": {
                     "201": {
                         "description": "User created"
+                    },
+                    "400": {
+                        "description": "Invalid input"
                     }
                 }
             },
             "get": {
+                "tags": ["user"],
                 "summary": "Get all users",
+                "operationId": "getUsers",
+                "produces": ["application/json"],
                 "responses": {
                     "200": {
-                        "description": "List of users",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/User"
-                            }
-                        }
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Error fetching users"
                     }
                 }
             }
         },
-        "/users/{id}": {
+        "/{id}": {
             "get": {
+                "tags": ["user"],
                 "summary": "Get user by ID",
+                "operationId": "getUserById",
+                "produces": ["application/json"],
                 "parameters": [
                     {
                         "name": "id",
@@ -54,15 +72,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "User details",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "User not found"
                     }
                 }
             },
             "put": {
+                "tags": ["user"],
                 "summary": "Update user",
+                "operationId": "updateUser",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
                 "parameters": [
                     {
                         "name": "id",
@@ -71,8 +93,9 @@
                         "type": "string"
                     },
                     {
-                        "name": "user",
                         "in": "body",
+                        "name": "body",
+                        "description": "User object",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/User"
@@ -82,11 +105,20 @@
                 "responses": {
                     "200": {
                         "description": "User updated"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "400": {
+                        "description": "Invalid input"
                     }
                 }
             },
             "delete": {
+                "tags": ["user"],
                 "summary": "Delete user",
+                "operationId": "deleteUser",
+                "produces": ["application/json"],
                 "parameters": [
                     {
                         "name": "id",
@@ -98,6 +130,9 @@
                 "responses": {
                     "200": {
                         "description": "User deleted"
+                    },
+                    "404": {
+                        "description": "User not found"
                     }
                 }
             }
@@ -106,12 +141,14 @@
     "definitions": {
         "User": {
             "type": "object",
+            "required": ["name", "age", "cpf", "email", "gender"],
             "properties": {
                 "name": {
                     "type": "string"
                 },
                 "age": {
-                    "type": "integer"
+                    "type": "integer",
+                    "format": "int32"
                 },
                 "cpf": {
                     "type": "string"
