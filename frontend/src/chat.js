@@ -19,6 +19,7 @@ function sendMessage() {
 
 messageInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
+        e.preventDefault();  // Prevent form submission
         sendMessage();
     }
 });
