@@ -1,36 +1,30 @@
-const username = localStorage.getItem('username');
-if (!username) {
-    window.location.href = 'login.html';
-}
+document.addEventListener('DOMContentLoaded', function () {
+    const socket = io();
+    const messages = document.getElementById('messages');
+    const messageInput = document.getElementById('message-input');
+    const username = localStorage.getItem('username');
 
-const socket = io('http://localhost:3000'); // Certifique-se de que o servidor está rodando no mesmo endereço
-const chatWindow = document.getElementById('chat-window');
-const output = document.getElementById('output');
-const messageInput = document.getElementById('message');
-const sendButton = document.getElementById('send');
-
-function sendMessage() {
-    const message = messageInput.value.trim();
-    if (message) {
-        socket.emit('chatMessage', { username, message });
-        messageInput.value = '';
+    function addMessage(message, isUser) {
+        const messageElement = document.createElement('li');
+        messageElement.classList.add('message');
+        messageElement.classList.add(isUser ? 'user' : 'other');
+        messageElement.textContent = message;
+        messages.appendChild(messageElement);
+        messages.scrollTop = messages.scrollHeight;
     }
-}
 
-messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        e.preventDefault();  // Prevent form submission
-        sendMessage();
-    }
-});
+    document.getElementById('message-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter' && messageInput.value.trim() !== '') {
+            const message = messageInput.value;
+            socket.emit('chat message', { message, username });
+            addMessage(`${username}: ${message}`, true);
+            messageInput.value = '';
+        }
+    });
 
-sendButton.addEventListener('click', sendMessage);
-
-socket.on('chatMessage', (data) => {
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message');
-    messageElement.classList.add(data.username === username ? 'me' : 'other');
-    messageElement.innerHTML = `<span class="username">${data.username}</span>: ${data.message}`;
-    output.appendChild(messageElement);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
+    socket.on('chat message', function (data) {
+        if (data.username !== username) {
+            addMessage(`${data.username}: ${data.message}`, false);
+        }
+    });
 });

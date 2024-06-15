@@ -1,28 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Carol</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
-<body>
-    <div class="container">
-        <div id="chat-container" class="card">
-            <div id="chat-window" class="card-content">
-                <div id="output"></div>
-            </div>
-            <div class="card-action">
-                <div class="input-field">
-                    <input id="message" type="text" placeholder="Type a message...">
-                    <button id="send" class="btn waves-effect waves-light">Send</button>
-                </div>
-            </div>
-        </div>
+<div id="chat-container" class="container">
+    <h3>Chat Carol</h3>
+    <div id="chat-box" class="card-panel grey lighten-5 z-depth-1">
+        <ul id="messages" class="collection"></ul>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <script src="./src/chat.js"></script>
+    <div class="input-field">
+        <input id="message-input" type="text" class="validate" autocomplete="off" placeholder="Digite sua mensagem...">
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script src="src/main.js"></script>
 </body>
 </html>
 

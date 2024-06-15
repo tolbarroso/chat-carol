@@ -1,133 +1,128 @@
 {
     "swagger": "2.0",
     "info": {
-      "version": "1.0.0",
-      "title": "Chat Carol API",
-      "description": "API para gerenciamento de usuários no chat"
+        "version": "1.0.0",
+        "title": "Chat Carol API",
+        "description": "API documentation for Chat Carol"
     },
-    "host": "localhost:3000",
     "basePath": "/api",
-    "schemes": [
-      "http"
-    ],
     "paths": {
-      "/users": {
-        "get": {
-          "summary": "Lista todos os usuários",
-          "responses": {
-            "200": {
-              "description": "Lista de usuários"
+        "/users": {
+            "post": {
+                "summary": "Create a new user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User created"
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "List of users",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                }
             }
-          }
         },
-        "post": {
-          "summary": "Cria um novo usuário",
-          "parameters": [
-            {
-              "in": "body",
-              "name": "user",
-              "description": "Usuário a ser criado",
-              "schema": {
-                "$ref": "#/definitions/User"
-              }
+        "/users/{id}": {
+            "get": {
+                "summary": "Get user by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User details",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User updated"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deleted"
+                    }
+                }
             }
-          ],
-          "responses": {
-            "201": {
-              "description": "Usuário criado"
-            }
-          }
         }
-      },
-      "/users/{id}": {
-        "get": {
-          "summary": "Busca um usuário pelo ID",
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Usuário encontrado"
-            },
-            "404": {
-              "description": "Usuário não encontrado"
-            }
-          }
-        },
-        "put": {
-          "summary": "Atualiza um usuário pelo ID",
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "in": "body",
-              "name": "user",
-              "description": "Dados do usuário para atualizar",
-              "schema": {
-                "$ref": "#/definitions/User"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Usuário atualizado"
-            },
-            "404": {
-              "description": "Usuário não encontrado"
-            }
-          }
-        },
-        "delete": {
-          "summary": "Deleta um usuário pelo ID",
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Usuário deletado"
-            },
-            "404": {
-              "description": "Usuário não encontrado"
-            }
-          }
-        }
-      }
     },
     "definitions": {
-      "User": {
-        "type": "object",
-        "properties": {
-          "nome": {
-            "type": "string"
-          },
-          "idade": {
-            "type": "integer"
-          },
-          "cpf": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "sexo": {
-            "type": "string"
-          }
+        "User": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "cpf": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                }
+            }
         }
-      }
     }
-  }
-  
+}
