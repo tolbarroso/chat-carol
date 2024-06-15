@@ -9,11 +9,16 @@
 </head>
 <body>
     <div class="container">
-        <div id="chat-container">
-            <div id="chat-window">
+        <div id="chat-container" class="card">
+            <div id="chat-window" class="card-content">
                 <div id="output"></div>
             </div>
-            <input id="message" type="text" placeholder="Type a message..." />
+            <div class="card-action">
+                <div class="input-field">
+                    <input id="message" type="text" placeholder="Type a message...">
+                    <button id="send" class="btn waves-effect waves-light">Send</button>
+                </div>
+            </div>
         </div>
     </div>
     <script src="./src/chat.js"></script>

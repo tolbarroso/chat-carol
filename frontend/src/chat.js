@@ -7,14 +7,23 @@ const socket = io('http://localhost:3000'); // Certifique-se de que o servidor e
 const chatWindow = document.getElementById('chat-window');
 const output = document.getElementById('output');
 const messageInput = document.getElementById('message');
+const sendButton = document.getElementById('send');
 
-messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && messageInput.value.trim() !== '') {
-        const message = messageInput.value.trim();
+function sendMessage() {
+    const message = messageInput.value.trim();
+    if (message) {
         socket.emit('chatMessage', { username, message });
         messageInput.value = '';
     }
+}
+
+messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
 });
+
+sendButton.addEventListener('click', sendMessage);
 
 socket.on('chatMessage', (data) => {
     const messageElement = document.createElement('div');
