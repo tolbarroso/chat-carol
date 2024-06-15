@@ -19,7 +19,11 @@
     document.getElementById('login-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const username = document.getElementById('username').value;
-      window.location.href = `chat.html?username=${username}`;
+      if (username) {
+        window.location.href = `chat.html?username=${username}`;
+      } else {
+        alert('Por favor, insira um nome de usuário.');
+      }
     });
   </script>
 </body>
