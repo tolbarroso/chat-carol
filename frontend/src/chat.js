@@ -25,7 +25,7 @@ form.addEventListener("submit", (e) => {
 
 socket.on("userJoined", (username) => {
   const item = document.createElement("li");
-  item.textContent = `${username} Entrou no chat`;
+  item.textContent = `${username} entrou no chat`;
   chat.appendChild(item);
   scrollToBottom();
 });
@@ -37,7 +37,7 @@ socket.on("chatMessage", async (msg) => {
     const isSentMessage = msgUsername === username;
 
     item.classList.add(isSentMessage ? "sent" : "received");
-    item.innerHTML = `<strong>${msgUsername}:</strong> ${msgText}`;
+    item.innerHTML = `<strong>${msgUsername}</strong><br>${msgText}`;
     chat.appendChild(item);
     scrollToBottom();
 
