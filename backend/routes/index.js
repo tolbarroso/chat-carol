@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator')
+const { body, validationResult } = require('express-validator');
 
 module.exports = function (application) {
     application.post('/chat',
@@ -10,8 +10,8 @@ module.exports = function (application) {
 
             const erros = validationResult(req);
 
-            if (erros.errors.toString() !== '') {
-                res.render("index", { validacao: erros })
+            if (erros.errors.length > 0) {
+                res.render("index", { validacao: erros });
                 return;
             }
 
@@ -19,25 +19,24 @@ module.exports = function (application) {
                 var d = new Date();
                 var h = d.getHours();
                 var m = d.getMinutes();
-                return h + ":" + m
+                return h + ":" + m;
             }
 
-
-            application.get('io').emit(
-                'msgParaCliente',
-                { apelido: dadosForm.apelido, mensagem: ' acabou de entrar no chat', hora: pegaHora() }
-
-            )
+            application.get('io').emit('msgParaCliente', {
+                apelido: dadosForm.apelido,
+                mensagem: ' acabou de entrar no chat',
+                hora: pegaHora()
+            });
 
             res.render("chat", { dadosForm: dadosForm });
         });
 
     application.get('/chat', function (req, res) {
-
-        application.get('io').emit(
-            'msgParaCliente',
-            { apelido: dadosForm.apelido, mensagem: ' acabou de entrar no chat', hora: pegaHora() }
-        )
+        application.get('io').emit('msgParaCliente', {
+            apelido: dadosForm.apelido,
+            mensagem: ' acabou de entrar no chat',
+            hora: pegaHora()
+        });
 
         res.render("chat", { dadosForm: dadosForm });
     });

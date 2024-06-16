@@ -8,56 +8,28 @@ const swaggerDocument = require('./swagger/swagger.json');
 const userRoutes = require('./routes/userRoutes');
 const externalApiService = require('./services/externalApiService');
 
-// Importar as configurações do servidor
-var app = require('./config/server');
-// const skt = require('socket.io');
-
-// Parametrizar a porta de escuta
-var server = app.listen(process.env.PORT || 5000, function () {
-    console.log('Servidor online');
-})
-
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-app.set('io', io);
 
 app.use(bodyParser.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/users', userRoutes);
 
-// criar a conexão do websocket
-io.on('connection', function (socket) {
+io.on('connection', (socket) => {
     console.log('Usuário conectou');
 
-    socket.on('disconnect', function () {
+    socket.on('disconnect', () => {
         console.log('Usuário desconectou');
     });
 
-    socket.on('msgParaServidor', function (data) {
+    socket.on('msgParaServidor', (data) => {
+        socket.emit('msgParaCliente', { apelido: data.apelido, mensagem: data.mensagem });
+        socket.broadcast.emit('msgParaCliente', { apelido: data.apelido, mensagem: data.mensagem });
 
-        // dialogo
-        socket.emit(
-            'msgParaCliente',
-            { apelido: data.apelido, mensagem: data.mensagem }
-        );
-
-        socket.broadcast.emit(
-            'msgParaCliente',
-            { apelido: data.apelido, mensagem: data.mensagem }
-        );
-
-        // participantes
-        if (parseInt(data.apelido_atualizado_nos_clientes) == 0) {
-            socket.emit(
-                'participantesParaCliente',
-                { apelido: data.apelido }
-            );
-
-            socket.broadcast.emit(
-                'participantesParaCliente',
-                { apelido: data.apelido }
-            );
+        if (parseInt(data.apelido_atualizado_nos_clientes) === 0) {
+            socket.emit('participantesParaCliente', { apelido: data.apelido });
+            socket.broadcast.emit('participantesParaCliente', { apelido: data.apelido });
         }
     });
 });
@@ -71,10 +43,7 @@ app.get('/api/cat', async (req, res) => {
     }
 });
 
-mongoose.connect('mongodb://localhost/chat-carol', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}, () => {
+mongoose.connect('mongodb://localhost/chat-carol', { useNewUrlParser: true, useUnifiedTopology: true }, () => {
     console.log('Connected to MongoDB');
 });
 
