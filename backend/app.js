@@ -15,22 +15,23 @@ const io = socketIo(server);
 app.use(bodyParser.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/users', userRoutes);
+app.use(express.static('frontend/public'));
 
+// Configurar a conexão do WebSocket
 io.on('connection', (socket) => {
-    console.log('Usuário conectou');
+    console.log('Usuário conectado');
+
+    socket.on('setUsername', (username) => {
+        socket.username = username;
+        io.emit('userJoined', username);
+    });
+
+    socket.on('chatMessage', (msg) => {
+        io.emit('chatMessage', msg);
+    });
 
     socket.on('disconnect', () => {
         console.log('Usuário desconectou');
-    });
-
-    socket.on('msgParaServidor', (data) => {
-        socket.emit('msgParaCliente', { apelido: data.apelido, mensagem: data.mensagem });
-        socket.broadcast.emit('msgParaCliente', { apelido: data.apelido, mensagem: data.mensagem });
-
-        if (parseInt(data.apelido_atualizado_nos_clientes) === 0) {
-            socket.emit('participantesParaCliente', { apelido: data.apelido });
-            socket.broadcast.emit('participantesParaCliente', { apelido: data.apelido });
-        }
     });
 });
 
@@ -46,6 +47,7 @@ app.get('/api/cat', async (req, res) => {
 mongoose.connect('mongodb://localhost/chat-carol', { useNewUrlParser: true, useUnifiedTopology: true }, () => {
     console.log('Connected to MongoDB');
 });
+
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {

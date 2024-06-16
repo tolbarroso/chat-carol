@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat</title>
-  <link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <div class="chat-container">
-    <ul id="chat" class="chat-messages"></ul>
-    <form id="form" class="chat-form">
-      <input id="input" autocomplete="off" placeholder="Digite uma mensagem..." />
-      <button>Enviar</button>
-    </form>
-  </div>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="../src/chat.js"></script>
+    <div id="chat-container">
+        <ul id="chat"></ul>
+        <form id="form">
+            <input id="input" autocomplete="off" placeholder="Digite sua mensagem...">
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="src/chat.js"></script>
 </body>
 </html>
+
