@@ -17,16 +17,17 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/users', userRoutes);
 app.use(express.static('frontend/public'));
 
-// Configurar a conexão do WebSocket
 io.on('connection', (socket) => {
     console.log('Usuário conectado');
 
     socket.on('setUsername', (username) => {
+        console.log('Username set:', username);  
         socket.username = username;
         io.emit('userJoined', username);
     });
 
     socket.on('chatMessage', (msg) => {
+        console.log('Chat message received:', msg);  
         io.emit('chatMessage', msg);
     });
 
@@ -34,6 +35,7 @@ io.on('connection', (socket) => {
         console.log('Usuário desconectou');
     });
 });
+
 
 app.get('/api/cat', async (req, res) => {
     try {
@@ -47,7 +49,6 @@ app.get('/api/cat', async (req, res) => {
 mongoose.connect('mongodb://localhost/chat-carol', { useNewUrlParser: true, useUnifiedTopology: true }, () => {
     console.log('Connected to MongoDB');
 });
-
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {

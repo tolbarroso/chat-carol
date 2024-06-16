@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (input.value) {
             const message = `${username}:${input.value}`;
+            console.log('Sending message:', message);
             socket.emit("chatMessage", message);
             input.value = "";
         }
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     socket.on("chatMessage", (msg) => {
+        console.log('Received message:', msg);
         const [msgUsername, msgText] = msg.split(':');
         const item = document.createElement("li");
         const isSentMessage = msgUsername === username;
@@ -38,18 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         item.innerHTML = `<strong>${msgUsername}</strong>: ${msgText}`;
         chat.appendChild(item);
         scrollToBottom();
-
-        if (msgText.toLowerCase().includes("img cat")) {
-            fetch('/api/cat')
-                .then(response => response.json())
-                .then(data => {
-                    const imgItem = document.createElement("li");
-                    imgItem.innerHTML = `<img src="${data.imageUrl}" alt="cat image" style="max-width: 100px;">`;
-                    chat.appendChild(imgItem);
-                    scrollToBottom();
-                })
-                .catch(error => console.error('Error fetching cat image:', error));
-        }
     });
 
     function scrollToBottom() {
